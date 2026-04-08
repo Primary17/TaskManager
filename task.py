@@ -10,4 +10,4 @@ class Task:
         self.priority = priority
 
     def __str__(self):
-        return f"Title: {self.title}; description: '{self.description}; created at {self.created_at}; prioroty: {self.priotity}"
+        return f"Title: {self.title}; description: '{self.description}; created at {self.created_at}; prioroty: {self.priority}"

@@ -1,17 +1,24 @@
 class TaskUI:
-    @staticmethod
-    def get_task_input():
+    def get_task_input(self):
         title = input("Enter task title: ")
         description = input("Describe task: ")
-        priority = int(input("Enter task priority (1-5): "))
+        try:
+            priority = int(input("Enter task priority (1-5): "))
+        except ValueError:
+            priority = 3
         return title, description, priority
 
-    @staticmethod
-    def display_error(error: Exception):
+    def display_message(self, message: str):
+        print(f"{message}")
+
+    def display_error(self, error):
         print(f"Action failed: {error}")
 
     def render_tasks(self, tasks, repository):
         print("--- TASK LIST ---")
+        if not tasks:
+            print("No tasks found.")
+            return
         for task in tasks:
             idx = repository.get_original_index(task)
             print(f"ID: {idx} | {task}")
