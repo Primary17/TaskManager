@@ -6,6 +6,7 @@ class TaskUI:
             priority = int(input("Enter task priority (1-5): "))
         except ValueError:
             priority = 3
+            print("Incorrect priority value, set 3 by default")
         return title, description, priority
 
     def display_message(self, message: str):
@@ -14,8 +15,11 @@ class TaskUI:
     def display_error(self, error):
         print(f"Action failed: {error}")
 
-    def render_tasks(self, tasks, repository):
-        print("--- TASK LIST ---")
+    def render_tasks(self, tasks, repository, done=False):
+        if done == False:
+            print("--- TASK LIST ---")
+        else:
+            print("--- COMPLETED TASKS ---")
         if not tasks:
             print("No tasks found.")
             return

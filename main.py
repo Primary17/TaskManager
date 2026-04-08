@@ -11,7 +11,9 @@ def main():
         "1": manager.create_task,
         "2": manager.delete_task,
         "3": manager.show_tasks,
-        "4": exit
+        "4": manager.mark_task_as_done,
+        "5": manager.show_completed_tasks,
+        "6": exit
     }
 
     while True:
@@ -19,11 +21,13 @@ def main():
         print("1. Add Task")
         print("2. Delete Task")
         print("3. Show Tasks")
-        print("4. Exit")
+        print("4. Mark Task As Done")
+        print("5. Show Completed Tasks")
+        print("6. Exit")
         
         choice = input("Select an option: ").strip()
 
-        if choice == "4":
+        if choice == "6":
             print("Goodbye!")
             break
 

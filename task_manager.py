@@ -23,11 +23,20 @@ class TaskManager:
             self.ui.display_message("Task deleted successfully.")
         except (ValueError, IndexError) as e:
             self.ui.display_error(e)
+    
+    def mark_task_as_done(self):
+        try:
+            idx = int(input("Enter index of task that was completed: "))
+            self.repo.complete(idx)
+            self.ui.display_message("Task successfully completed.")
+        except (ValueError, IndexError) as e:
+            self.ui.display_error(e)
 
-    def show_tasks(self):
+    def show_tasks(self, done=False):
         sort_choice = input("Sort by (priority/created_at): ").strip()
         
         strategies = {
+            "": None,
             "priority": lambda t: t.priority,
             "created_at": lambda t: t.created_at
         }
@@ -37,7 +46,14 @@ class TaskManager:
             if sort_choice and not key:
                 raise ValueError("Invalid sorting type")
                 
-            tasks = self.repo.get_all(sort_key=key)
-            self.ui.render_tasks(tasks, self.repo)
+            if done == False:
+                tasks = self.repo.get_all(sort_key=key)
+            else:
+                tasks = self.repo.get_done(sort_key=key)
+            
+            self.ui.render_tasks(tasks, self.repo, done)
         except Exception as e:
             self.ui.display_error(e)
+
+    def show_completed_tasks(self):
+        self.show_tasks(True)
