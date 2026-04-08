@@ -1,47 +1,43 @@
 from task import Task
+from task_ui import TaskUI
+from task_repository import TaskRepository
 
 class TaskManager:
-    def __init__(self):
-        self.tasks = list()
+    def __init__(self, repository: TaskRepository, ui: TaskUI):
+        self.repo = repository
+        self.ui = ui
 
-    def add_task(self):
-        title = input("Enter task title:")
-        description = input("Descript task:")
-        priority = input("Enter task priority (in range from 1 to 5):")
+    def create_task(self):
         try:
-            task = Task(title, description, priority)
-        except ex:
-            print(f"Failed to create task: '{ex}'.")
-        else:
-            self.tasks.append(task)
-            task_id = self.tasks.index(task)
-            print("The task succesful was created.")
-            print(f"Index of the created task: {task_id}.")
+            data = self.ui.get_task_input()
+            task = Task(*data)
+            task_id = self.repo.add(task)
+            self.ui.display_message(f"Task created with index: {task_id}")
+        except Exception as e:
+            self.ui.display_error(e)
 
     def delete_task(self):
-        task_id = input("Enter index of the task, that should be deleted:")
         try:
-            self.tasks.pop(task_id)
-        except ex:
-            print("Failed to create task: '{ex}'.")
-        else:
-            print("The task succesful was deleted.")
+            idx = int(input("Enter index to delete: "))
+            self.repo.remove(idx)
+            self.ui.display_message("Task deleted successfully.")
+        except (ValueError, IndexError) as e:
+            self.ui.display_error(e)
 
-    def get_tasks(self, sorted_by="priority"):
-        if sorted_by == "priority":
-            sorted_tasks = sorted(self.tasks, key=lambda t: t.priority)
-        elif sorted_by == "created_at":
-            sorted_tasks = sorted(self.tasks, key=lambda t: t.created_at)
-        else:
-            raise ValueError("Unknown tasks sorting type")
-        for task in sorted_taskstasks:
-            yield (f"{task}; index: {self.tasks.index(task)}")
-
-    def print_tasks():
-        sorting_type = input("Choose between 'priority' and 'created_ad' task sorting:")
+    def show_tasks(self):
+        sort_choice = input("Sort by (priority/created_at): ").strip()
+        
+        strategies = {
+            "priority": lambda t: t.priority,
+            "created_at": lambda t: t.created_at
+        }
+        
         try:
-            task_list = self.get_tasks(sorted_by=sorting_type)
-            for task in task_list:
-                print(task)
-        except ex:
-            print(f"Failed to print task list: {ex}.")
+            key = strategies.get(sort_choice)
+            if sort_choice and not key:
+                raise ValueError("Invalid sorting type")
+                
+            tasks = self.repo.get_all(sort_key=key)
+            self.ui.render_tasks(tasks, self.repo)
+        except Exception as e:
+            self.ui.display_error(e)
