@@ -14,6 +14,8 @@ class TaskRepository:
         return len(self._tasks) - 1
 
     def remove(self, index: int):
+        if not isinstance(index, int):
+            raise ValueError(f"Index must be an integer, got {type(index).__name__}")
         if 0 <= index < len(self._tasks):
             task = self._tasks.pop(index)
             self.save_to_file()
@@ -21,6 +23,8 @@ class TaskRepository:
         raise IndexError("Task index out of range")
 
     def complete(self, index: int):
+        if not isinstance(index, int):
+            raise ValueError(f"Index must be an integer, got {type(index).__name__}")
         if 0 <= index < len(self._tasks):
             task = self._tasks.pop(index)
             self._done.append(task)
